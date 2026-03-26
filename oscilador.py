@@ -5,6 +5,9 @@ def oscilador():
     from matplotlib.patches import Rectangle
     from matplotlib.patches import FancyArrowPatch
     from matplotlib.animation import FuncAnimation
+    import animation_objects
+    from animation_objects import Spring
+
     
     # creamos las figuras
     fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(16,8), gridspec_kw={'width_ratios':[1,2,1]}, sharey=False, constrained_layout=False)
@@ -17,19 +20,33 @@ def oscilador():
     ax1.set_ylim(-1,1)
     ax1.axhline(0)
     ax3.axhline(0)
-    fig.dpi = 100  #fijamos los dpi a 100 para la figura
+    fig.dpi = 50  #fijamos los dpi a 100 para la figura
     fig.set_size_inches(16, 8)  # 1800x800 pixeles a 100 dpi ()
 
     # Se crean los objetos
-    square = Rectangle((-0.1, -0.1), 0.2, 0.2)
+
+    # cuadrado
+    square = Rectangle((-0.1, -0.1), 0.2, 0.2, lw=4, facecolor="white", edgecolor="black")
     ax2.add_patch(square)
-    y_, = ax3.plot([],[],"r-")
-    dy_, = ax1.plot([],[],"r-")
-    flecha_v = FancyArrowPatch((-0.5,0),(-0.5,0), arrowstyle='->, head_length=10, head_width=5')
-    flecha_v2 = FancyArrowPatch((-0.5,0),(-0.5,0), arrowstyle='->, head_length=10, head_width=5')
+
+    #graficas de velocidad y desplazamiento
+    y_, = ax3.plot([],[],"r-", color="k")
+    dy_, = ax1.plot([],[],"r-", color="k")
+
+    #flechas de velocidad
+    flecha_v = FancyArrowPatch((-0.5,0),(-0.5,0), arrowstyle='->, head_length=10, head_width=5', lw=3)
+    flecha_v2 = FancyArrowPatch((-0.5,0),(-0.5,0), arrowstyle='->, head_length=10, head_width=5', lw=3)
     ax2.add_patch(flecha_v)
     ax1.add_patch(flecha_v2)
-    pos_y, = ax2.plot([0.4,0.4],[0,0],"r-")
+
+    #líneas de posición
+    pos_y, = ax2.plot([0.4,0.4],[0,0],"r-",color="k")
+    sup_pos_movil, = ax2.plot([0.35,0.45],[0,0],"r-",color="k")
+    sup_pos_fix, = ax2.plot([0.35,0.45],[0,0],"r-",color="k")
+
+    #resorte
+    resorte = Spring(ax2, pos=[(0.0,-2.1),(0.0,-0.1)], weight=1.3)
+    resorte.draw()
 
 
     #creamos los arrays que se grafican
@@ -53,6 +70,8 @@ def oscilador():
         y = -0.1 + A*np.cos(0)  # posición inicial con la amplitud dada
         square.set_xy((-0.1, y))
         dy = A*omega*np.sin(0)
+        sup_pos_movil.set_data([0.35,0.45],[0,0])
+        sup_pos_fix.set_data([0.35,0.45],[0,0])
         flecha_v.set_positions((-0.5,0),(-0.5,dy))
         flecha_v2.set_positions((0.0,0),(0.0,dy))
         ax1.set_ylim(-1.1*A*omega,1.1*A*omega)
@@ -69,8 +88,10 @@ def oscilador():
         y_.set_data(T,Y)
         dy_.set_data(T,dY)
         pos_y.set_data( [0.4,0.4], [0,y+0.1] )
+        sup_pos_movil.set_data([0.35,0.45],[y+0.1,y+0.1])
         ax1.set_xlim(frame/fps-1.8, frame/fps+0.2)
         ax3.set_xlim(frame/fps-1.8, frame/fps+0.2)
+        resorte.reset(compression=0.5*A*np.cos(omega * frame / fps) + 0.5)
         return square, flecha_v, flecha_v2, y_, dy_, pos_y
         
 
