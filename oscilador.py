@@ -8,6 +8,7 @@ def oscilador():
     import animation_objects
     from animation_objects import Spring
 
+
     
     # creamos las figuras
     fig, (ax1,ax2,ax3) = plt.subplots(1,3, figsize=(16,8), gridspec_kw={'width_ratios':[1,2,1]}, sharey=False, constrained_layout=False)
@@ -18,10 +19,18 @@ def oscilador():
     ax3.set_ylim(-1,1)
     ax2.set_ylim(-1,1)
     ax1.set_ylim(-1,1)
-    ax1.axhline(0)
-    ax3.axhline(0)
-    fig.dpi = 50  #fijamos los dpi a 100 para la figura
-    fig.set_size_inches(16, 8)  # 1800x800 pixeles a 100 dpi ()
+    ax1.axhline(0, color="black", ls="--")
+    ax3.axhline(0, color="black", ls="--")
+    fig.dpi = 90  #fijamos los dpi a 100 para la figura
+    fig.set_size_inches(16, 8)  # 1440x720 pixeles a 90 dpi ()
+    #títulos de las gráficas y ejes
+    ax1.set_title("Velocidad (m/s)")
+    ax1.set_xlabel("Tiempo (s)")
+    ax2.set_title("Movimiento")
+    ax3.set_title("Desplazamiento (m)")
+    ax3.set_xlabel("Tiempo (s)")
+
+
 
     # Se crean los objetos
 
@@ -48,14 +57,21 @@ def oscilador():
     resorte = Spring(ax2, pos=[(0.0,-2.1),(0.0,-0.1)], weight=1.3)
     resorte.draw()
 
-
     #creamos los arrays que se grafican
     T,Y,dY = [],[],[]
 
+    #Textos
+    tex_v = ax2.text(0,0, r"$\vec{v}(t)$", fontsize=20, family = "serif")
+    tex_x = ax2.text(0,0,r"$x(t)$", fontsize=20, family = "serif")
 
-    
+
+
     #fijamos los fps para la animación
-    fps = 25
+    fps = 50
+
+
+
+
 
     # le preguntamos al usuario la amplitud inicial
     A = float(input("Ingrese la amplitud inicial (entre 0 y 1): "))
@@ -75,6 +91,8 @@ def oscilador():
         flecha_v.set_positions((-0.5,0),(-0.5,dy))
         flecha_v2.set_positions((0.0,0),(0.0,dy))
         ax1.set_ylim(-1.1*A*omega,1.1*A*omega)
+        tex_v.set_position((0,0))
+        tex_x.set_position((0,0))
         return square, y_, dy_, pos_y
     def update(frame):
         y = -0.1 + A*np.cos(omega * frame / fps)  # posición en función del tiempo
@@ -92,6 +110,8 @@ def oscilador():
         ax1.set_xlim(frame/fps-1.8, frame/fps+0.2)
         ax3.set_xlim(frame/fps-1.8, frame/fps+0.2)
         resorte.reset(compression=0.5*A*np.cos(omega * frame / fps) + 0.5)
+        tex_v.set_position((-0.6,y+0.5*dy/(2*A*omega)))
+        tex_x.set_position((0.46,y/2))
         return square, flecha_v, flecha_v2, y_, dy_, pos_y
         
 
