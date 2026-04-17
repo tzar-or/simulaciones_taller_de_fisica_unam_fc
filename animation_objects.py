@@ -47,10 +47,10 @@ class Spring:
         def R(x,y,pos = pos):
             #definimos el angulo de la rotación
             if( (pos[1][0]-pos[0][0])==0 ):
-                theta = 0
+                theta = 0 if (pos[1][1]-pos[0][1])<0 else np.pi
             else:
-                theta = np.arctan( (pos[1][1]-pos[0][1])/(pos[1][0]-pos[0][0]) ) + np.pi/2
-            theta = theta if (pos[1][1]-pos[0][1])>0 else theta-np.pi
+                theta = np.arctan( (pos[1][1]-pos[0][1])/(pos[1][0]-pos[0][0]) ) - np.pi/2
+            theta = theta if (pos[1][0]-pos[0][0])>0 else theta-np.pi
             return np.matmul([x,y],[[np.cos(theta), np.sin(theta)],[-np.sin(theta),np.cos(theta)]])+np.array([pos[0][0], pos[0][1]])
 
 
@@ -87,12 +87,11 @@ class Spring:
         #Función de transformación
         def R(x,y,pos = pos):
             #definimos el angulo de la rotación
-            #revisamos que no compartan el mismo valor de X los puntos para no dividir entre 0
             if( (pos[1][0]-pos[0][0])==0 ):
-                theta = 0
+                theta = 0 if (pos[1][1]-pos[0][1])<0 else np.pi
             else:
-                theta = np.arctan( (pos[1][1]-pos[0][1])/(pos[1][0]-pos[0][0]) ) + np.pi/2
-            theta = theta if (pos[1][1]-pos[0][1])>0 else theta-np.pi
+                theta = np.arctan( (pos[1][1]-pos[0][1])/(pos[1][0]-pos[0][0]) ) - np.pi/2
+            theta = theta if (pos[1][0]-pos[0][0])>0 else theta-np.pi
             return np.matmul([x,y],[[np.cos(theta), np.sin(theta)],[-np.sin(theta),np.cos(theta)]])+np.array([pos[0][0], pos[0][1]])
 
         #definimos vsriables de apoyo
