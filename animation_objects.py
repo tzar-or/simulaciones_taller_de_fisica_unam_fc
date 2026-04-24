@@ -137,6 +137,7 @@ class Measure_arrow():
         self.weight = weight
 
     def draw(self):
+        ax = self.ax
         #variable de longitud
         pos = self.pos
         l = np.sqrt( (pos[0][0] - pos[1][0])**2 + (pos[0][1] - pos[1][1])**2 )
@@ -201,6 +202,7 @@ class Measure_line():
 
     def draw(self):
         #variable de longitud
+        ax = self.ax
         pos = self.pos
         l = np.sqrt( (pos[0][0] - pos[1][0])**2 + (pos[0][1] - pos[1][1])**2 )
 
